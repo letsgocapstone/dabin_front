@@ -18,15 +18,15 @@ const handler = NextAuth({
           throw new Error("이메일과 비밀번호를 입력해주세요.");
         }
 
-        const res = await fetch('${process.env.NEXTAUTH_URL}/api/login', 
+        const res = await fetch(`${process.env.NEXTAUTH_URL}/api/login`, 
         {
           method:"POST", //서버에 데이터 전송(로그인 요청)
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            username: credentials?.username,
-            password: credentials?.password
+            username: credentials.username,
+            password: credentials.password
           })
         });
         const user = await res.json(); //백엔드에서 응답받은 데이터를 JSON으로 변환
@@ -37,21 +37,8 @@ const handler = NextAuth({
       }
     })
   ],
-
-  //accessToken 관리
-  callbacks: {
-    async jwt({token, user}) {
-      return {...token, ...user}; //기존 토큰에 유저 정보 합쳐서 반환
-    },
-
-    //session(): 클라이언트가 세션 데이터 가져올 때 실행
-    async session({session, token}) {
-      session.user = token as any; //JWT 토큰 정보를 session 객체에 저장
-      return session;
-    }
-  },
   //custom page 사용..
-  pages: {signIn: "/signin"}
+  //pages: {signIn: "/signin"}
 });
 
 export {handler as GET, handler as POST};
